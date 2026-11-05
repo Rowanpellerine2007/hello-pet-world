@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8f8ef">
+  <title>Hello Pet World</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #203b36;
+      --muted: #65756c;
+      --paper: #fbfbf6;
+      --green: #27705b;
+      --green-dark: #1d5948;
+      --line: #e2e8dd;
+      --coral: #e8755e;
+      --shadow: 0 12px 30px rgb(37 69 55 / 9%);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font-family: "Trebuchet MS", "Avenir Next", sans-serif; font-size: 15px; line-height: 1.5; }
+    button { font: inherit; }
+    button:focus-visible, a:focus-visible { outline: 3px solid #e8755e; outline-offset: 3px; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; max-width: 1160px; min-height: 76px; margin: auto; padding: 12px 28px; }
+    .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--ink); font: 700 21px Georgia, "Times New Roman", serif; text-decoration: none; }
+    .brand-mark { display: grid; width: 38px; height: 38px; place-items: center; border-radius: 12px; background: #dcebe0; color: var(--green); }
+    .brand-mark svg { width: 23px; height: 23px; }
+    .favorite-shortcut { display: inline-flex; align-items: center; gap: 8px; min-height: 42px; padding: 7px 12px; border: 1px solid var(--line); border-radius: 999px; background: #fff; color: var(--ink); cursor: pointer; font-weight: 700; }
+    .favorite-shortcut:hover { border-color: #b6cbbb; }
+    .heart-icon { width: 18px; height: 18px; color: var(--coral); }
+    .count-badge { display: grid; min-width: 23px; height: 23px; padding: 0 6px; place-items: center; border-radius: 999px; background: #f9e1d9; color: #a74734; font-size: 12px; font-weight: 800; }
+    .intro-band { background-color: #eaf2e8; background-image: radial-gradient(#c9ddcd 1.1px, transparent 1.1px); background-position: 8px 8px; background-size: 23px 23px; }
+    .intro-inner { display: flex; align-items: center; justify-content: space-between; gap: 30px; max-width: 1160px; min-height: 218px; margin: auto; padding: 35px 28px 39px; }
+    .intro-copy { max-width: 610px; }
+    .eyebrow { margin: 0 0 8px; color: var(--green); font-size: 11px; font-weight: 800; letter-spacing: 1.3px; text-transform: uppercase; }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { margin-bottom: 8px; font: 700 42px/1.1 Georgia, "Times New Roman", serif; }
+    .intro-copy > p:last-child { margin-bottom: 0; color: #52685d; font-size: 16px; }
+    .recommend-button { display: inline-flex; flex: 0 0 auto; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding: 0 19px; border: 0; border-radius: 8px; background: var(--green); box-shadow: 0 5px 0 #1b5b49; color: #fff; cursor: pointer; font-weight: 800; transition: transform 160ms ease, background 160ms ease; }
+    .recommend-button:hover { background: var(--green-dark); transform: translateY(-2px); }
+    .recommend-button:active { transform: translateY(2px); }
+    .recommend-button svg { width: 19px; height: 19px; }
+    main { max-width: 1160px; margin: auto; padding: 31px 28px 56px; }
+    .shelf-heading { display: flex; align-items: end; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
+    .shelf-heading h2 { margin: 0; font: 700 25px Georgia, "Times New Roman", serif; }
+    .pet-total { margin: 0; color: var(--muted); font-size: 13px; }
+    .filter-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; }
+    .filter-button { min-height: 38px; padding: 7px 15px; border: 1px solid #dfe6dc; border-radius: 999px; background: transparent; color: #54645b; cursor: pointer; font-size: 13px; font-weight: 700; }
+    .filter-button:hover { border-color: #aac3af; }
+    .filter-button[aria-pressed="true"] { border-color: var(--ink); background: var(--ink); color: #fff; }
+    .pet-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+    .pet-card { overflow: hidden; border: 1px solid #e5e9df; border-radius: 9px; background: #fff; box-shadow: 0 4px 13px rgb(37 69 55 / 4%); animation: arrive 360ms both; transition: transform 170ms ease, box-shadow 170ms ease; }
+    .pet-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+    .pet-art { display: grid; position: relative; min-height: 196px; overflow: hidden; place-items: center; }
+    .pet-art::before, .pet-art::after { position: absolute; width: 135px; height: 135px; border: 1px solid rgb(32 59 54 / 8%); border-radius: 50%; content: ""; }
+    .pet-art::before { transform: translate(-43px, 42px); }
+    .pet-art::after { width: 92px; height: 92px; transform: translate(92px, -64px); }
+    .art-peach { background: #f8e4d7; }
+    .art-sky { background: #dceef0; }
+    .art-lilac { background: #e8e4f2; }
+    .art-butter { background: #f5edcb; }
+    .art-mint { background: #dcecdf; }
+    .art-rose { background: #f3dfe2; }
+    .pet-portrait { z-index: 1; width: 168px; height: 168px; }
+    .portrait-button { display: grid; position: relative; width: 100%; min-height: 196px; place-items: center; padding: 0; border: 0; background: transparent; cursor: pointer; }
+    .portrait-button .pet-portrait { pointer-events: none; }
+    .pet-type { position: absolute; z-index: 2; top: 12px; left: 12px; padding: 4px 9px; border: 1px solid rgb(32 59 54 / 9%); border-radius: 999px; background: rgb(255 255 255 / 82%); color: #415a50; font-size: 11px; font-weight: 800; }
+    .card-content { padding: 13px 15px 15px; }
+    .card-title-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .pet-name { overflow: hidden; margin: 0; color: var(--ink); font: 700 20px Georgia, "Times New Roman", serif; text-overflow: ellipsis; white-space: nowrap; }
+    .pet-mood { margin: 3px 0 11px; color: var(--muted); font-size: 13px; }
+    .card-actions { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .details-button { padding: 5px 0; border: 0; background: transparent; color: var(--green); cursor: pointer; font-size: 13px; font-weight: 800; }
+    .details-button:hover { color: var(--green-dark); text-decoration: underline; text-underline-offset: 3px; }
+    .favorite-button { display: grid; width: 38px; height: 38px; flex: 0 0 auto; place-items: center; border: 1px solid #e5e9df; border-radius: 50%; background: #fff; color: #748278; cursor: pointer; }
+    .favorite-button[aria-pressed="true"] { border-color: #f6d8d0; background: #fff2ee; color: #d6604b; }
+    .favorite-button svg { width: 18px; height: 18px; }
+    .empty-state { grid-column: 1 / -1; padding: 45px 20px; border: 1px dashed #c9d6c9; border-radius: 9px; color: var(--muted); text-align: center; }
+    .empty-state strong { display: block; margin-bottom: 4px; color: var(--ink); font: 700 20px Georgia, "Times New Roman", serif; }
+    .recommendation { display: none; align-items: center; gap: 14px; margin-bottom: 22px; padding: 12px 15px; border: 1px solid #e3d99e; border-radius: 9px; background: #fff9db; animation: arrive 260ms both; }
+    .recommendation.is-visible { display: flex; }
+    .recommendation-art { width: 48px; height: 48px; flex: 0 0 auto; }
+    .recommendation-art svg { width: 48px; height: 48px; }
+    .recommendation-copy { min-width: 0; flex: 1; cursor: pointer; }
+    .recommendation-label { margin: 0 0 1px; color: #7e6823; font-size: 11px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase; }
+    .recommendation-name { margin: 0; font: 700 18px Georgia, "Times New Roman", serif; }
+    .recommendation-description { margin: 1px 0 0; color: #6d6750; font-size: 13px; }
+    .icon-button { display: grid; width: 36px; height: 36px; flex: 0 0 auto; place-items: center; border: 0; border-radius: 50%; background: transparent; color: #776d47; cursor: pointer; }
+    .icon-button:hover { background: rgb(126 104 35 / 9%); }
+    dialog { width: min(460px, calc(100% - 32px)); padding: 0; overflow: hidden; border: 1px solid #e4e9dc; border-radius: 12px; background: #fff; color: var(--ink); box-shadow: 0 24px 80px rgb(22 46 36 / 24%); }
+    dialog::backdrop { background: rgb(23 43 35 / 48%); backdrop-filter: blur(2px); }
+    .dialog-art { display: grid; min-height: 190px; place-items: center; }
+    .dialog-art .pet-portrait { width: 156px; height: 156px; }
+    .dialog-body { padding: 20px 23px 23px; }
+    .dialog-body h2 { margin: 0 0 3px; font: 700 28px Georgia, "Times New Roman", serif; }
+    .dialog-subtitle { margin: 0 0 15px; color: var(--green); font-size: 13px; font-weight: 800; }
+    .pet-facts { display: grid; grid-template-columns: 1fr 1fr; gap: 11px 15px; margin: 0 0 20px; }
+    .pet-facts div { min-width: 0; padding-top: 8px; border-top: 1px solid var(--line); }
+    .pet-facts dt { color: var(--muted); font-size: 11px; font-weight: 800; text-transform: uppercase; }
+    .pet-facts dd { margin: 2px 0 0; color: var(--ink); font-size: 14px; }
+    .dialog-footer { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+    .dialog-favorite { min-height: 40px; padding: 7px 10px; border: 0; border-radius: 7px; background: #fff2ee; color: #a74734; cursor: pointer; font-weight: 700; }
+    .dialog-close { min-height: 40px; padding: 7px 14px; border: 1px solid var(--line); border-radius: 7px; background: #fff; color: var(--ink); cursor: pointer; font-weight: 700; }
+    footer { max-width: 1104px; margin: auto; padding: 17px 0 24px; border-top: 1px solid var(--line); color: #718078; font-size: 12px; }
+    @keyframes arrive { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 760px) {
+      .pet-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px; }
+      .pet-art, .portrait-button { min-height: 170px; }
+      .pet-portrait { width: 150px; height: 150px; }
+      footer { margin: 0 24px; }
+    }
+    @media (max-width: 520px) {
+      .topbar { min-height: 66px; padding: 11px 16px; }
+      .brand { gap: 8px; font-size: 19px; }
+      .brand-mark { width: 34px; height: 34px; }
+      .favorite-shortcut { gap: 6px; min-height: 39px; padding: 6px 9px; font-size: 13px; }
+      .intro-inner { align-items: flex-start; flex-direction: column; gap: 18px; min-height: 0; padding: 29px 20px 32px; }
+      h1 { font-size: 34px; }
+      .intro-copy > p:last-child { font-size: 14px; }
+      .recommend-button { min-height: 44px; }
+      main { padding: 24px 16px 42px; }
+      .shelf-heading { align-items: flex-start; flex-direction: column; gap: 3px; }
+      .shelf-heading h2 { font-size: 23px; }
+      .pet-grid { gap: 10px; }
+      .pet-art, .portrait-button { min-height: 138px; }
+      .pet-portrait { width: 126px; height: 126px; }
+      .pet-type { top: 8px; left: 8px; padding: 3px 7px; font-size: 10px; }
+      .card-content { padding: 10px 11px 12px; }
+      .pet-name { font-size: 18px; }
+      .pet-mood { min-height: 38px; margin-bottom: 7px; font-size: 12px; }
+      .card-actions { gap: 4px; }
+      .recommendation { gap: 9px; padding: 10px; }
+      .recommendation-description { font-size: 12px; }
+      .dialog-body { padding: 18px; }
+      .dialog-footer { align-items: stretch; flex-direction: column; }
+      .dialog-close { order: -1; }
+      footer { margin: 0 16px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar" id="home">
+    <a class="brand" href="#home" aria-label="Hello Pet World home">
+      <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 13.2c-2.6 0-5.3 2.2-5.3 4.6 0 1.5 1.2 2.4 2.7 2.1l2.6-.5 2.6.5c1.5.3 2.7-.6 2.7-2.1 0-2.4-2.7-4.6-5.3-4.6Z" fill="currentColor"/><ellipse cx="5.1" cy="10" rx="2" ry="2.7" transform="rotate(-25 5.1 10)" fill="currentColor"/><ellipse cx="9.3" cy="6.4" rx="2" ry="2.6" transform="rotate(-9 9.3 6.4)" fill="currentColor"/><ellipse cx="14.7" cy="6.4" rx="2" ry="2.6" transform="rotate(9 14.7 6.4)" fill="currentColor"/><ellipse cx="18.9" cy="10" rx="2" ry="2.7" transform="rotate(25 18.9 10)" fill="currentColor"/></svg></span>
+      <span>Hello Pet World</span>
+    </a>
+    <button class="favorite-shortcut" id="favoritesShortcut" type="button" aria-label="Show favourites">
+      <svg class="heart-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20.4 8.6c0 4.2-8.4 10-8.4 10s-8.4-5.8-8.4-10A4.3 4.3 0 0 1 12 6.1a4.3 4.3 0 0 1 8.4 2.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+      <span>Favourites</span><span class="count-badge" id="favoriteCount" aria-live="polite">0</span>
+    </button>
+  </header>
+  <section class="intro-band" aria-labelledby="page-title">
+    <div class="intro-inner">
+      <div class="intro-copy"><p class="eyebrow">A little hello goes a long way</p><h1 id="page-title">Fluffy tails. Big personalities.</h1><p>Meet the lovable lemurs and snow leopards waiting to become your new favourite.</p></div>
+      <button class="recommend-button" id="recommendButton" type="button"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3.5 14.1 9l5.4 2-5.4 2-2.1 5.5L9.9 13l-5.4-2 5.4-2L12 3.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="m19 15 .9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9L19 15Z" fill="currentColor"/></svg>Pick a pet for me</button>
+    </div>
+  </section>
+  <main>
+    <section aria-labelledby="meet-title">
+      <div class="shelf-heading"><h2 id="meet-title">Meet the pets</h2><p class="pet-total" id="petTotal" aria-live="polite">6 lovely pals</p></div>
+      <div class="filter-row" role="group" aria-label="Filter pets">
+        <button class="filter-button" type="button" data-filter="all" aria-pressed="true">Everyone</button>
+        <button class="filter-button" type="button" data-filter="lemur" aria-pressed="false">Lemurs</button>
+        <button class="filter-button" type="button" data-filter="snow leopard" aria-pressed="false">Snow leopards</button>
+        <button class="filter-button" type="button" data-filter="favorites" aria-pressed="false">Favourites</button>
+      </div>
+      <aside class="recommendation" id="recommendation" aria-live="polite" aria-label="Your pet recommendation">
+        <div class="recommendation-art" id="recommendationArt" aria-hidden="true"></div>
+        <div class="recommendation-copy" id="recommendationOpen" role="button" tabindex="0" aria-label="View recommended pet">
+          <p class="recommendation-label">Your new pal might be...</p><h3 class="recommendation-name" id="recommendationName"></h3><p class="recommendation-description" id="recommendationDescription"></p>
+        </div>
+        <button class="icon-button" id="recommendationClose" type="button" aria-label="Dismiss recommendation"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+      </aside>
+      <div class="pet-grid" id="petGrid" aria-live="polite"></div>
+    </section>
+    <footer>Made for animal people, daydreamers, and excellent treat-givers.</footer>
+  </main>
+  <dialog id="petDialog" aria-labelledby="dialogName" aria-describedby="dialogPersonality">
+    <div class="dialog-art" id="dialogArt"></div>
+    <div class="dialog-body">
+      <p class="eyebrow" id="dialogType"></p><h2 id="dialogName"></h2><p class="dialog-subtitle" id="dialogBreedAge"></p>
+      <dl class="pet-facts">
+        <div><dt>Personality</dt><dd id="dialogPersonality"></dd></div>
+        <div><dt>Favourite activity</dt><dd id="dialogActivity"></dd></div>
+        <div><dt>Breed</dt><dd id="dialogBreed"></dd></div>
+        <div><dt>Age</dt><dd id="dialogAge"></dd></div>
+      </dl>
+      <div class="dialog-footer"><button class="dialog-favorite" id="dialogFavorite" type="button"></button><button class="dialog-close" id="dialogClose" type="button">Close</button></div>
+    </div>
+  </dialog>
+  <script>
+    const pets = [
+      { id: "maple", name: "Maple", type: "lemur", breed: "Ring-tailed lemur", age: "3 years", personality: "Gentle and curious", activity: "Sniffing through the garden", mood: "Gentle garden explorer", color: "peach", coat: "#aaa99d", patch: "#f5f0e2" },
+      { id: "pixel", name: "Pixel", type: "snow leopard", breed: "Himalayan snow leopard", age: "2 years", personality: "Curious little thinker", activity: "Watching birds from the window", mood: "Curious little thinker", color: "sky", coat: "#d7dedb", patch: "#f7f5eb" },
+      { id: "biscuit", name: "Biscuit", type: "lemur", breed: "Red ruffed lemur", age: "4 years", personality: "Affectionate and easygoing", activity: "Sharing a cozy blanket", mood: "Professional cuddle buddy", color: "butter", coat: "#c98361", patch: "#f5e7d2" },
+      { id: "miso", name: "Miso", type: "snow leopard", breed: "Snow leopard", age: "1 year", personality: "Sunny and soft-spoken", activity: "Napping in a sunbeam", mood: "Tiny sunbeam collector", color: "rose", coat: "#e4e3dc", patch: "#f8f6ec" },
+      { id: "juniper", name: "Juniper", type: "snow leopard", breed: "Snow leopard", age: "3 years", personality: "Playful and imaginative", activity: "Pouncing on feather toys", mood: "Playful midnight poet", color: "lilac", coat: "#c8d0d0", patch: "#f5f2e8" },
+      { id: "teddy", name: "Teddy", type: "lemur", breed: "Black-and-white ruffed lemur", age: "2 years", personality: "Cheerful and loyal", activity: "Playing fetch in the park", mood: "Sunny-day sidekick", color: "mint", coat: "#ddd8c9", patch: "#f7f2e4" }
+    ];
+    const favorites = new Set();
+    let activeFilter = "all";
+    let selectedPetId = null;
+    let recommendedPetId = null;
+    const petGrid = document.querySelector("#petGrid");
+    const favoriteCount = document.querySelector("#favoriteCount");
+    const petTotal = document.querySelector("#petTotal");
+    const petDialog = document.querySelector("#petDialog");
+
+    function portraitMarkup(pet, className = "pet-portrait") {
+      const lemur = pet.type === "lemur";
+      const leftEar = lemur
+        ? `<circle cx="39" cy="54" r="18" fill="#f7f3e8" stroke="#34453d" stroke-width="3"/><circle cx="39" cy="54" r="9" fill="#b7a99e"/>`
+        : `<path d="M43 57c0-15 9-22 19-17 8 4 10 14 8 25Z" fill="${pet.coat}" stroke="#34453d" stroke-width="3"/><path d="M51 55c0-7 4-11 9-9 4 2 5 7 4 12Z" fill="#b7a99e"/>`;
+      const rightEar = lemur
+        ? `<circle cx="121" cy="54" r="18" fill="#f7f3e8" stroke="#34453d" stroke-width="3"/><circle cx="121" cy="54" r="9" fill="#b7a99e"/>`
+        : `<path d="M117 57c0-15-9-22-19-17-8 4-10 14-8 25Z" fill="${pet.coat}" stroke="#34453d" stroke-width="3"/><path d="M109 55c0-7-4-11-9-9-4 2-5 7-4 12Z" fill="#b7a99e"/>`;
+      const lemurTail = lemur ? `<path d="M112 119c27 2 36 23 23 30-11 6-21-5-12-13" fill="none" stroke="#f1eddf" stroke-width="15" stroke-linecap="round"/><path d="M112 119c27 2 36 23 23 30-11 6-21-5-12-13" fill="none" stroke="#4b514a" stroke-width="4" stroke-dasharray="5 5" stroke-linecap="round"/>` : "";
+      const faceMarkings = lemur
+        ? `<path d="M48 72c8-13 19-17 32-13 13-4 24 0 32 13-3 17-13 25-32 25s-29-8-32-25Z" fill="#414943"/><ellipse cx="62" cy="77" rx="8" ry="9" fill="#f7f3e8"/><ellipse cx="98" cy="77" rx="8" ry="9" fill="#f7f3e8"/><ellipse cx="49" cy="94" rx="13" ry="12" fill="#f7f3e8"/><ellipse cx="111" cy="94" rx="13" ry="12" fill="#f7f3e8"/>`
+        : `<path d="M42 67c9-11 20-16 34-15M84 52c14-1 25 4 34 15" fill="none" stroke="${pet.patch}" stroke-width="7" stroke-linecap="round"/><g fill="none" stroke="#59615d" stroke-width="2.5"><circle cx="49" cy="68" r="5"/><circle cx="73" cy="61" r="5"/><circle cx="91" cy="61" r="5"/><circle cx="112" cy="68" r="5"/><circle cx="45" cy="105" r="5"/><circle cx="115" cy="105" r="5"/><circle cx="62" cy="116" r="4"/><circle cx="98" cy="116" r="4"/></g>`;
+      return `<svg class="${className}" viewBox="0 0 160 160" role="img" aria-label="Cartoon portrait of ${pet.name} the ${pet.type}">
+        <ellipse cx="80" cy="137" rx="43" ry="8" fill="#34453d" opacity=".1"/>${lemurTail}${leftEar}${rightEar}
+        <path d="M80 34c-29 0-48 21-48 53 0 30 18 47 48 47s48-17 48-47c0-32-19-53-48-53Z" fill="${pet.coat}" stroke="#34453d" stroke-width="3"/>
+        ${faceMarkings}
+        <ellipse cx="62" cy="79" rx="3.5" ry="4.5" fill="#293b35"/><ellipse cx="98" cy="79" rx="3.5" ry="4.5" fill="#293b35"/>
+        <path d="M76 96c0-2.7 2-4.5 4-4.5s4 1.8 4 4.5c0 2.4-1.6 3.5-4 3.5s-4-1.1-4-3.5Z" fill="#34453d"/><path d="M80 99v5m0 0c-4 5-9 5-13 1m13-1c4 5 9 5 13 1" fill="none" stroke="#34453d" stroke-width="2.5" stroke-linecap="round"/>
+        ${lemur ? `<ellipse cx="80" cy="99" rx="12" ry="8" fill="#f1eddf"/>` : `<ellipse cx="80" cy="99" rx="17" ry="13" fill="#f1eddf" stroke="#34453d" stroke-width="1.5"/>`}
+        <circle cx="48" cy="96" r="7" fill="#ed8e81" opacity=".35"/><circle cx="112" cy="96" r="7" fill="#ed8e81" opacity=".35"/>
+        ${pet.id === "juniper" ? `<path d="M40 47c11-15 28-22 45-19" fill="none" stroke="#f3d776" stroke-width="4" stroke-linecap="round"/><circle cx="115" cy="44" r="4" fill="#f3d776"/>` : ""}
+      </svg>`;
+    }
+
+    function visiblePets() {
+      return pets.filter((pet) => activeFilter === "favorites" ? favorites.has(pet.id) : activeFilter === "all" || pet.type === activeFilter);
+    }
+
+    function renderPets() {
+      const shown = visiblePets();
+      petTotal.textContent = `${shown.length} ${shown.length === 1 ? "lovely pal" : "lovely pals"}`;
+      if (shown.length === 0) {
+        petGrid.innerHTML = `<div class="empty-state"><strong>No favourites just yet</strong>Tap a heart on any pet to save them here.</div>`;
+        return;
+      }
+      petGrid.innerHTML = shown.map((pet, index) => `
+        <article class="pet-card" style="animation-delay:${index * 45}ms">
+          <div class="pet-art art-${pet.color}">
+            <span class="pet-type">${pet.type === "lemur" ? "Lemur" : "Snow leopard"}</span>
+            <button class="portrait-button" type="button" data-action="details" data-pet="${pet.id}" aria-label="View details about ${pet.name}">${portraitMarkup(pet)}</button>
+          </div>
+          <div class="card-content"><div class="card-title-row"><h3 class="pet-name">${pet.name}</h3></div>
+            <p class="pet-mood">${pet.mood}</p>
+            <div class="card-actions"><button class="details-button" type="button" data-action="details" data-pet="${pet.id}">Meet ${pet.name} <span aria-hidden="true">→</span></button>
+              <button class="favorite-button" type="button" data-action="favorite" data-pet="${pet.id}" aria-label="${favorites.has(pet.id) ? "Remove" : "Add"} ${pet.name} ${favorites.has(pet.id) ? "from" : "to"} favourites" aria-pressed="${favorites.has(pet.id)}">
+                <svg viewBox="0 0 24 24" fill="${favorites.has(pet.id) ? "currentColor" : "none"}" aria-hidden="true"><path d="M20.4 8.6c0 4.2-8.4 10-8.4 10s-8.4-5.8-8.4-10A4.3 4.3 0 0 1 12 6.1a4.3 4.3 0 0 1 8.4 2.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+          </div>
+        </article>`).join("");
+    }
+
+    function updateFavoriteCount() {
+      favoriteCount.textContent = String(favorites.size);
+      document.querySelector("#favoritesShortcut").setAttribute("aria-label", `Show favourites, ${favorites.size} saved`);
+    }
+
+    function setFilter(filter) {
+      activeFilter = filter;
+      document.querySelectorAll(".filter-button").forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.filter === filter)));
+      renderPets();
+    }
+
+    function updateDialogFavorite() {
+      const isFavorite = favorites.has(selectedPetId);
+      document.querySelector("#dialogFavorite").textContent = isFavorite ? "♥  Remove from favourites" : "♡  Add to favourites";
+    }
+
+    function toggleFavorite(petId) {
+      if (favorites.has(petId)) favorites.delete(petId);
+      else favorites.add(petId);
+      updateFavoriteCount();
+      renderPets();
+      if (selectedPetId === petId && petDialog.open) updateDialogFavorite();
+    }
+
+    function openDetails(petId) {
+      const pet = pets.find((item) => item.id === petId);
+      if (!pet) return;
+      selectedPetId = petId;
+      const dialogArt = document.querySelector("#dialogArt");
+      dialogArt.className = `dialog-art art-${pet.color}`;
+      dialogArt.innerHTML = portraitMarkup(pet);
+      document.querySelector("#dialogType").textContent = `A very good ${pet.type}`;
+      document.querySelector("#dialogName").textContent = pet.name;
+      document.querySelector("#dialogBreedAge").textContent = `${pet.breed} · ${pet.age}`;
+      document.querySelector("#dialogPersonality").textContent = pet.personality;
+      document.querySelector("#dialogActivity").textContent = pet.activity;
+      document.querySelector("#dialogBreed").textContent = pet.breed;
+      document.querySelector("#dialogAge").textContent = pet.age;
+      updateDialogFavorite();
+      petDialog.showModal();
+    }
+
+    function recommendPet() {
+      const options = pets.filter((pet) => pet.id !== recommendedPetId);
+      const pet = options[Math.floor(Math.random() * options.length)];
+      recommendedPetId = pet.id;
+      document.querySelector("#recommendationArt").innerHTML = portraitMarkup(pet, "");
+      document.querySelector("#recommendationName").textContent = pet.name;
+      document.querySelector("#recommendationDescription").textContent = `${pet.mood}. Come say hello!`;
+      document.querySelector("#recommendation").classList.add("is-visible");
+      document.querySelector("#recommendationOpen").setAttribute("aria-label", `View details about recommended pet ${pet.name}`);
+    }
+
+    document.querySelector(".filter-row").addEventListener("click", (event) => {
+      const button = event.target.closest("[data-filter]");
+      if (button) setFilter(button.dataset.filter);
+    });
+    petGrid.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-action]");
+      if (!button) return;
+      if (button.dataset.action === "favorite") toggleFavorite(button.dataset.pet);
+      if (button.dataset.action === "details") openDetails(button.dataset.pet);
+    });
+    document.querySelector("#favoritesShortcut").addEventListener("click", () => setFilter("favorites"));
+    document.querySelector("#recommendButton").addEventListener("click", recommendPet);
+    document.querySelector("#recommendationOpen").addEventListener("click", () => { if (recommendedPetId) openDetails(recommendedPetId); });
+    document.querySelector("#recommendationOpen").addEventListener("keydown", (event) => {
+      if ((event.key === "Enter" || event.key === " ") && recommendedPetId) { event.preventDefault(); openDetails(recommendedPetId); }
+    });
+    document.querySelector("#recommendationClose").addEventListener("click", () => document.querySelector("#recommendation").classList.remove("is-visible"));
+    document.querySelector("#dialogClose").addEventListener("click", () => petDialog.close());
+    document.querySelector("#dialogFavorite").addEventListener("click", () => toggleFavorite(selectedPetId));
+    petDialog.addEventListener("click", (event) => { if (event.target === petDialog) petDialog.close(); });
+    updateFavoriteCount();
+    renderPets();
+  </script>
+</body>
+</html>
